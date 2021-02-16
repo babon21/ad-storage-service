@@ -1,0 +1,25 @@
+version: "3.1"
+services:
+  ad-storage-postgres:
+    image: library/postgres:13
+    container_name: ad-storage-postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: postgres
+    volumes:
+      - ./scripts/init.sql/:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+
+  ad-storage-service:
+    build: .
+    env_file:
+      - app.env
+    container_name: ad-storage-service
+    restart: on-failure
+    ports:
+      - 8080:8080
+    depends_on:
+      - ad-storage-postgres
