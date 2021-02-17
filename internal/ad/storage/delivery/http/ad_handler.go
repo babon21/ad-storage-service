@@ -8,7 +8,6 @@ import (
 	"github.com/babon21/ad-storage-service/pkg/delivery/http/api"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog/log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,7 +20,7 @@ type ResponseError struct {
 
 // AdHandler  represent the httphandler for ad
 type AdHandler struct {
-	adService service.AdService
+	AdService service.AdService
 }
 
 func (h *AdHandler) GetAdList(c echo.Context) error {
@@ -40,9 +39,9 @@ func (h *AdHandler) GetAdList(c echo.Context) error {
 
 	// TODO validate page > 0
 
-	ads, err := h.adService.GetAdList(page, sortField, sortOrder)
+	ads, err := h.AdService.GetAdList(page, sortField, sortOrder)
 	if err != nil {
-		return c.JSONPretty(getStatusCode(err), ResponseError{Message: err.Error()}, "  ")
+		return c.JSONPretty(http.StatusInternalServerError, ResponseError{Message: err.Error()}, "  ")
 	}
 
 	response := api.GetAdListResponse{Ads: ads}
@@ -91,9 +90,9 @@ func (h *AdHandler) CreateAd(c echo.Context) error {
 		MainPhoto:   request.Photos[0],
 	}
 
-	id, err := h.adService.CreateAd(&ad)
+	id, err := h.AdService.CreateAd(&ad)
 	if err != nil {
-		return c.JSONPretty(getStatusCode(err), ResponseError{Message: err.Error()}, "  ")
+		return c.JSONPretty(http.StatusInternalServerError, ResponseError{Message: err.Error()}, "  ")
 	}
 
 	response := api.CreateAdResponse{Id: id}
@@ -124,9 +123,9 @@ func (h *AdHandler) GetAd(c echo.Context) error {
 		fields = nil
 	}
 
-	ad, err := h.adService.GetAd(adId, fields)
+	ad, err := h.AdService.GetAd(adId, fields)
 	if err != nil {
-		return c.JSONPretty(getStatusCode(err), ResponseError{Message: err.Error()}, "  ")
+		return c.JSONPretty(http.StatusInternalServerError, ResponseError{Message: err.Error()}, "  ")
 	}
 
 	response := api.GetAdResponse{
@@ -139,26 +138,10 @@ func (h *AdHandler) GetAd(c echo.Context) error {
 // NewAdHandler will initialize the ads/ resources endpoint
 func NewAdHandler(e *echo.Echo, s service.AdService) {
 	handler := &AdHandler{
-		adService: s,
+		AdService: s,
 	}
 
 	e.GET("/ads", handler.GetAdList)
 	e.GET("/ads/:id", handler.GetAd)
 	e.POST("/ads", handler.CreateAd)
-}
-
-func getStatusCode(err error) int {
-	if err == nil {
-		return http.StatusOK
-	}
-
-	log.Error().Msg(err.Error())
-	switch err {
-	case domain.ErrInternalServerError:
-		return http.StatusInternalServerError
-	case domain.ErrNotFound:
-		return http.StatusNotFound
-	default:
-		return http.StatusInternalServerError
-	}
 }
