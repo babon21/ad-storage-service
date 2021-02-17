@@ -48,7 +48,7 @@ func (p *postgresAdRepository) GetAd(adId string, optionalFields []string) (doma
 	var err error
 
 	if len(optionalFields) == 0 {
-		err = p.Conn.QueryRow(getSimpleAdQuery, adId).Scan(&ad.Title, &ad.Price, &ad.Description, &ad.MainPhoto, pq.Array(&ad.Photos))
+		err = p.Conn.QueryRow(getSimpleAdQuery, adId).Scan(&ad.Title, &ad.Price, &ad.MainPhoto)
 		return ad, err
 	}
 
