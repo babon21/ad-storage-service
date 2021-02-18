@@ -7,7 +7,7 @@ import (
 	"github.com/babon21/ad-storage-service/internal/ad/storage/service"
 	"github.com/babon21/ad-storage-service/pkg/delivery/http/api"
 	"github.com/go-playground/validator/v10"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
 	"strings"
@@ -37,7 +37,9 @@ func (h *AdHandler) GetAdList(c echo.Context) error {
 		return c.JSONPretty(http.StatusBadRequest, ResponseError{Message: "page param is invalid, must be natural number"}, "  ")
 	}
 
-	// TODO validate page > 0
+	if page <= 0 {
+		return c.JSONPretty(http.StatusBadRequest, ResponseError{Message: "page param is invalid, must be natural number"}, "  ")
+	}
 
 	ads, err := h.AdService.GetAdList(page, sortField, sortOrder)
 	if err != nil {

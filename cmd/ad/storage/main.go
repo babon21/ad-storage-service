@@ -6,9 +6,10 @@ import (
 	adRepository "github.com/babon21/ad-storage-service/internal/ad/storage/repository/postgres"
 	adService "github.com/babon21/ad-storage-service/internal/ad/storage/service"
 	"github.com/babon21/ad-storage-service/internal/config"
+	"github.com/babon21/ad-storage-service/internal/http/middleware"
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo"
 	"github.com/rs/zerolog/log"
 )
 
@@ -28,8 +29,8 @@ func main() {
 	}
 
 	e := echo.New()
-	//middL := middleware.InitMiddleware()
-	//e.Use(middL.AccessLogMiddleware)
+	middL := middleware.InitMiddleware()
+	e.Use(middL.AccessLogMiddleware)
 	roomRepo := adRepository.NewPostgresAdRepository(db)
 	roomUsecase := adService.NewAdService(roomRepo)
 	adHttp.NewAdHandler(e, roomUsecase)

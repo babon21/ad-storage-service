@@ -7,7 +7,7 @@ import (
 	"github.com/babon21/ad-storage-service/internal/ad/storage/domain"
 	"github.com/babon21/ad-storage-service/internal/ad/storage/domain/mocks"
 	"github.com/bxcodec/faker/v3"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -165,8 +165,18 @@ func TestCreateAd(t *testing.T) {
 func TestCreateAd_RequestBodyInvalid(t *testing.T) {
 	mockService := new(mocks.AdService)
 
+	mockAd := domain.Ad{
+		Title:       "title",
+		Description: "desc",
+		Price:       -10,
+		Photos:      []string{"link1"},
+	}
+
+	j, err := json.Marshal(mockAd)
+	assert.NoError(t, err)
+
 	e := echo.New()
-	req, err := http.NewRequest(echo.POST, "/ads", strings.NewReader(string("")))
+	req, err := http.NewRequest(echo.POST, "/ads", strings.NewReader(string(j)))
 	assert.NoError(t, err)
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
