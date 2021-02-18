@@ -86,9 +86,6 @@ func TestGetAd(t *testing.T) {
 		Photos:      nil,
 	}
 
-	mockAds := make([]domain.Ad, 0)
-	mockAds = append(mockAds, mockAd)
-
 	t.Run("success", func(t *testing.T) {
 		mockAdRepo.On("GetAd", mock.AnythingOfType("string"), mock.AnythingOfType("[]string")).Return(mockAd, nil).Once()
 		s := service.NewAdService(mockAdRepo)

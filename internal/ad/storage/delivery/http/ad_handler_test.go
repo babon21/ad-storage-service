@@ -84,8 +84,6 @@ func TestGetAdList_ServiceError(t *testing.T) {
 	err := faker.FakeData(&mockAd)
 	assert.NoError(t, err)
 	mockService := new(mocks.AdService)
-	mockAds := make([]domain.Ad, 0)
-	mockAds = append(mockAds, mockAd)
 
 	mockService.On("GetAdList", mock.AnythingOfType("int"), mock.Anything, mock.Anything).Return(nil, errors.New("Unexpected Error"))
 
@@ -110,8 +108,6 @@ func TestGetAdList_SortParamIsEmpty(t *testing.T) {
 	err := faker.FakeData(&mockAd)
 	assert.NoError(t, err)
 	mockService := new(mocks.AdService)
-	mockAds := make([]domain.Ad, 0)
-	mockAds = append(mockAds, mockAd)
 
 	e := echo.New()
 	req, err := http.NewRequest(echo.GET, "/ads?page=1", strings.NewReader(""))
