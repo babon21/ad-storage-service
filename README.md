@@ -52,6 +52,7 @@ make test
 - `sqlx` для работы с БД
 - Генерация mock-объектов для unit-тестирования - `mockery`
 - Валидация запросов - `go-playground/validator`
+- Логирование с помощью `zerolog`
 
 # API
 ### POST /ads
