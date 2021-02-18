@@ -103,35 +103,6 @@ func TestGetAdList_Asc(t *testing.T) {
 	assert.Len(t, list, 2)
 }
 
-/*
-func TestSaveStatistics(t *testing.T) {
-	// TODO
-	ad := domain.Ad {
-		Title:       "title1",
-		Description: "desc1",
-		Price:       10,
-		MainPhoto:   "link1",
-	}
-	dbMock, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("an error '%ad' was not expected when opening s stub database connection", err)
-	}
-
-	db := sqlx.NewDb(dbMock, "")
-
-
-	columns := []string{"id"}
-	exceptedId := "1"
-	mock.ExpectQuery("INSERT INTO ad").WithArgs(ad.Title, ad.Description, ad.Price, ad.MainPhoto, pq.Array(ad.Photos)).WillReturnRows(sqlmock.NewRows(columns).AddRow(exceptedId))
-
-	s := postgres.NewPostgresAdRepository(db)
-
-	id, err := s.CreateAd(&ad)
-	assert.NoError(t, err)
-	assert.Equal(t, exceptedId, id)
-}
-*/
-
 func TestGetAdWithDesc(t *testing.T) {
 	dbMock, mock, err := sqlmock.New()
 	if err != nil {
